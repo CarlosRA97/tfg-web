@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web</title>
+    {% include "deps/cssdeps.html" %}
+    {% include "deps/jsdeps.html" %}
+
+</head>
+<body>
+    {% include "navbar.html" %}
+    {% include "map.html" %}
+    <div class="p-2 container">
+        Ancho: <input style="width: 10%;" class="input" type="number" name="width" id="width">
+        Alto: <input style="width: 10%;" class="input" type="number" name="height" id="height">
+        {% include "captureMapButton.html" %}
+        {% include "button.html" %}
+        <a class="button" href="/show_images">Galeria de Imagenes {{ countImages }}</a>
+    </div>
+</body>
+</html>

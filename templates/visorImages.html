@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Visor de Imágenes</title>
+    <link rel="stylesheet" href="/static/css/style.css">  </head>
+<body>
+    <h1>Imágenes disponibles:</h1>
+    <div class="image-grid">
+        {% for imagen in imagenes %}
+            <div class="image-item">
+                <a href="/images/{{ imagen }}">
+                    <img src="/images/{{ imagen }}" alt="{{ imagen }}">
+                </a>
+            </div>
+        {% endfor %}
+    </div>
+</body>
+</html>
