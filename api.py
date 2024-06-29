@@ -1,8 +1,10 @@
+import base64
 from typing import Annotated
 import uuid
 from fastapi import FastAPI, File, Request, Response, UploadFile
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+from ai.generative.generate_image import generate_images, numpy_array_to_base64_png
 
 app = FastAPI()
 
@@ -73,3 +75,13 @@ async def scan(request: Request):
     except:
         # Handle any exceptions (e.g., invalid data format)
         return {"error": "Invalid image data"}
+
+@app.get('/generate')
+async def generatePage(request: Request):
+    return templates.TemplateResponse("generateImage.html", {"request":request})
+
+@app.post('/generate')
+async def generateImage(request: Request):
+    img = generate_images()
+    img = numpy_array_to_base64_png(img)
+    return templates.TemplateResponse("image.html", {"request":request, "image": img })

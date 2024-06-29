@@ -9,8 +9,8 @@ var tiles = L.tileLayer('https://api.maptiler.com/maps/satellite/{z}/{x}/{y}@2x.
 tiles.addTo(map)
 
 var areaSelect = L.areaSelect({
-    width:250, 
-    height:250, 
+    width: 224, 
+    height: 224, 
     //keepAspectRatio:true,
     //minHorizontalSpacing: 80,
     //minVerticalSpacing: 80,
@@ -31,15 +31,13 @@ areaSelect.on("change", function() {
 });
 areaSelect.addTo(map);
 
-// selectorWidth.onchange(function (e) {
-//   areaSelect.width = e.value;
-//   document.querySelector(".width").value = e.value;
-// })
+selectorHeight.addEventListener("change", function(e) {
+  areaSelect.setDimensions({"height": e.target.value})
+})
 
-// selectorHeight.onchange(function (e) {
-//   areaSelect.height = e.value;
-//   document.querySelector(".height").value = e.value;
-// })
+selectorWidth.addEventListener("change", function(e) {
+  areaSelect.setDimensions({"width": e.target.value})
+})
 
 const States = {
   loading: Symbol("loading"),
