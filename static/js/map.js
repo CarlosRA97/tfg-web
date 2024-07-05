@@ -129,7 +129,10 @@ function captureMap() {
             headers: {
               'Content-Type': imgBlob.type, // adjust based on your image format
             },
-            body: byteArray,
+            body: {
+              "image": byteArray,
+              "coords": areaSelect.getBounds(),
+            }
           })
           .then(response => {
             // Handle the response
@@ -146,4 +149,62 @@ function captureMap() {
             emitState("#captureMap", States.error)
           });
     });
+}
+
+// function to convert degrees to radians
+function toRadians(degrees) {
+  return (degrees * Math.PI) / 180;
+}
+
+// function to calculate the area of a polygon
+function calculatePolygonArea(latlngs) {
+  // Earth's radius in meters
+  const R = 6378137;
+
+  // number of points
+  const pointsCount = latlngs.length;
+
+  if (pointsCount < 3) return 0;
+
+  let area = 0;
+
+  for (let i = 0; i < pointsCount; i++) {
+    let p1 = latlngs[i];
+    let p2 = latlngs[(i + 1) % pointsCount];
+
+    let lat1 = toRadians(p1.lat);
+    let lon1 = toRadians(p1.lng);
+    let lat2 = toRadians(p2.lat);
+    let lon2 = toRadians(p2.lng);
+
+    area += (lon2 - lon1) * (2 + Math.sin(lat1) + Math.sin(lat2));
+  }
+
+  area = (Math.abs(area) * (R * R)) / 2;
+
+  return area;
+}
+
+function addSegmentation() {
+  // layer group
+  let layers = L.layerGroup().addTo(map);
+
+  // polygon
+  const polygonsArea = [
+    [52.2303720513083, 21.01182227649689],
+    [52.229590161561866, 21.010928342628483],
+    [52.22930430472933, 21.012029091316227],
+    [52.23008958517418, 21.01269364356995],
+  ];
+
+  // add polygon to layers
+  const polygon = L.polygon(polygonsArea, { color: "red" }).addTo(layers);
+  const polygonArea = calculatePolygonArea(polygon.getLatLngs()[0]);
+  // add tooltip to marker
+  polygon.bindTooltip("Area: " + polygonArea.toFixed(5) + " m²", {
+    permanent: true,
+    direction: "bottom",
+    className: "area",
+    offset: [-15, 30],
+  });
 }

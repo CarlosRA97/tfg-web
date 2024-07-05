@@ -4,7 +4,10 @@ import uuid
 from fastapi import FastAPI, File, Request, Response, UploadFile
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+from pydantic import BaseModel
 from ai.generative.generate_image import generate_images, numpy_array_to_base64_png
+from ai.segmentation.SegmentationModel import SegmentationModel
+from ai.segmentation.generate_segmentation import generate_contour, predict_mask
 
 app = FastAPI()
 
@@ -50,6 +53,10 @@ async def click(request: Request):
     state.increment()
     return templates.TemplateResponse("button.html", {"request": request, "count": state.count})
 
+class SegmentationRequest(BaseModel):
+    image: bytes
+    coords: dict
+
 @app.post("/scan")
 async def scan(request: Request):
     try:
@@ -71,10 +78,17 @@ async def scan(request: Request):
             buffer.write(raw_data)
 
         return templates.TemplateResponse("captureMapButton.html", {"request":request, "state": ""})
-        # ... your image processing logic using image_data ...
     except:
         # Handle any exceptions (e.g., invalid data format)
         return {"error": "Invalid image data"}
+
+@app.post("/segment")
+async def segment(request: SegmentationRequest):
+    
+    # run model and get points in image
+    # tranform points to latlng
+    # return points 
+    return leafletPolygon
 
 @app.get('/generate')
 async def generatePage(request: Request):
